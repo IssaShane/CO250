@@ -6,11 +6,16 @@
 
 using namespace std;
 
+typedef vector<vector<Fraction>> matrix;
+
 // Matrix/Vector artithmatic
-int inner_product(vector<int>&, vector<int>&);
-Fraction inner_product(vector<Fraction>&, vector<Fraction>&);
-vector<int> multiply(vector<vector<int>>&, vector<int>&);
-vector<Fraction> multiply(vector<vector<Fraction>>&, vector<Fraction>&);
+int inner_product(const vector<int>&, const vector<int>&);
+Fraction inner_product(const vector<Fraction>&, const vector<Fraction>&);
+vector<int> multiply(const vector<vector<int>>&, const vector<int>&);
+vector<Fraction> multiply(const vector<vector<Fraction>>&, const vector<Fraction>&);
+
+// Matrix/Matrix arithmetic
+vector<vector<Fraction>> multiply(const vector<vector<Fraction>> &m1, const vector<vector<Fraction>> &m2);
 
 // Matrix row operations
 
@@ -25,9 +30,15 @@ bool matrix_equal(vector<vector<Fraction>> &m1, vector<vector<Fraction>> &m2);
 
 // Matrix operations
 vector<vector<Fraction>> inverse(vector<vector<Fraction>>&);
-ostream &operator<<(ostream &str, const vector<vector<Fraction>> &m);
-ostream &operator<<(ostream &str, const vector<Fraction> &v);
 vector<vector<Fraction>> subset(vector<vector<Fraction>> &m, vector<int> &basis);
 void matrix_simplify(vector<vector<Fraction>> &m);
+vector<vector<Fraction>> transpose(vector<vector<Fraction>>&);
+void swap_rows(matrix &m, int i, int j);
+
+// Input / Output
+istream &operator>>(istream &, matrix&);
+ostream &operator<<(ostream &str, const vector<vector<Fraction>> &m);
+ostream &operator<<(ostream &str, const vector<Fraction> &v);
+istream &operator>>(istream&, vector<Fraction>&);
 
 #endif

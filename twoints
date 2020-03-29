@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [[ $# != 1 ]]; then
+	echo >&2 "Usage"
+fi
+
+/u/cs230/pub/twoints $1

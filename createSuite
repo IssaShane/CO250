@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ $# != 1 ]]; then 
+	>&2 echo "Usage error"
+	exit 1
+fi
+
+ls | egrep '.in$|.args$' | sed -e 's/.in$//' | sed -e 's/.args$//' > $1

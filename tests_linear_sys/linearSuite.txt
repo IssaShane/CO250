@@ -1,0 +1,7 @@
+eliminate1
+equal1
+lower1
+upper1
+upper2
+upper3
+upper_lower1

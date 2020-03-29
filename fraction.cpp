@@ -1,8 +1,13 @@
 #include "fraction.h"
 
-Fraction::Fraction(int num, int denom) {
+Fraction::Fraction(int num, int denom) { 
   this->num = num;
   this->denom = denom;
+}
+
+Fraction::Fraction(int num) {
+  this->num = num;
+  this->denom = 1;
 }
 
 Fraction::Fraction(const Fraction &other) {
@@ -10,7 +15,7 @@ Fraction::Fraction(const Fraction &other) {
   this->denom = other.getDenom();
 }
 
-Fraction operator+(const Fraction & a, const Fraction & b) {
+Fraction operator+(const Fraction &a, const Fraction & b) {
   Fraction sum(b.getDenom()*a.getNum() + a.getDenom()*b.getNum(), 
                b.getDenom()*a.getDenom());
   return sum;
@@ -22,36 +27,40 @@ Fraction operator-(const Fraction & a, const Fraction & b) {
   return diff;
 }
 
-Fraction Fraction::operator-=(const Fraction &b) {
+Fraction & Fraction::operator-=(const Fraction &b) {
   *this = *this - b;
   return *this;
 }
 
-Fraction Fraction::operator+=(const Fraction &b) {
+Fraction & Fraction::operator+=(const Fraction &b) {
   *this = *this + b;
   return *this;
 }
 
-Fraction operator*(int c, Fraction &a) {
+Fraction operator*(int c, const Fraction &a) {
   Fraction product(c*a.getNum(), a.getDenom());
   return product;
 }
 
-Fraction Fraction::operator*=(int b) {
+Fraction & Fraction::operator*=(int b) {
   *this = b * (*this);
   return *this;
 }
 
-Fraction operator*(Fraction &a, Fraction &b) {
+Fraction operator*(const Fraction &a, const Fraction &b) {
   Fraction product(a.getNum()*b.getNum(), b.getDenom()*a.getDenom());
-  product.simplify;
+  if (a == Fraction(0) || b == Fraction(0)) return Fraction(0);
   return product;
 }
 
-Fraction operator/(Fraction &a, Fraction &b) {
+Fraction operator/(const Fraction &a, const Fraction &b) {
   Fraction quotient(a.getNum()*b.getDenom(), a.getDenom()*b.getNum());
-  quotient.simplify();
   return quotient;
+}
+
+Fraction & Fraction::operator/=(const Fraction &b) {
+  *this = *this / b;
+  return *this;
 }
 
 bool operator==(const Fraction &a, const Fraction &b) {
@@ -99,7 +108,6 @@ int gcd(int x, int y) {
 		else
 		   y = y - x; 
 	}
-  //std::cout << "gcd is terminating" << std::endl;
   return x;
 }
 
@@ -109,6 +117,18 @@ void Fraction::simplify() {
     return;
   }
   else if (this->denom == 1) {
+    return;
+  }
+  else if (this->denom < 0) {
+    this->denom*=(-1);
+    this->num*=(-1);
+  }
+  if (this->num < 0) {
+    this->num *= (-1);
+    int factor = gcd(this->num, this->denom);
+    this->num /= factor;
+    this->denom /= factor;
+    this->num *= (-1);
     return;
   }
   //std::cout << "simplify" << std::endl;
@@ -129,6 +149,7 @@ int Fraction::getDenom() const {
 }
 
 std::ostream &operator<<(std::ostream &str, const Fraction &a) {
-  str << a.getNum() << " / " << a.getDenom() << std::endl;
+  if (a.getDenom() == 1) str << a.getNum();
+  else str << a.getNum() << "/" << a.getDenom();
   return str;
 }
