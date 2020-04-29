@@ -5,8 +5,8 @@
 
 class Fraction {
   private:
-    int num;
-    int denom;
+    long long int num;
+    long long int denom;
 
   public:
     Fraction(int num, int denom);
@@ -15,6 +15,7 @@ class Fraction {
     Fraction &operator-=(const Fraction &b);
     Fraction &operator+=(const Fraction &b);
     Fraction &operator*=(int b);
+    Fraction &operator*=(const Fraction &b);
     Fraction &operator/=(const Fraction &b);
     void simplify();
 
@@ -34,6 +35,7 @@ bool operator>(const Fraction &a, const Fraction &b);
 bool operator<=(const Fraction &a, const Fraction &b);
 bool operator>=(const Fraction &a, const Fraction &b);
 std::ostream &operator<<(std::ostream &str, const Fraction &a);
+std::istream &operator>>(std::istream &str, Fraction &a);
 
 
 #endif

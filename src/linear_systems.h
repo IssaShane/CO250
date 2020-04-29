@@ -20,6 +20,8 @@ vector<vector<Fraction>> lower_triangular(const vector<vector<Fraction>> &m);
 // returns the upper triangular matrix of the matrix m
 vector<vector<Fraction>> upper_triangular(const vector<vector<Fraction>> &m);
 
+vector<matrix> LU_decomp(const matrix &m);
+
 // finds the value of x2 in a system of the following form:
 // ------------------
 // a1x1 = b1
