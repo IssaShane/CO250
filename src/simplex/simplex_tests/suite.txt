@@ -1,0 +1,4 @@
+aux1
+canonform1
+canonform2
+canonical1
