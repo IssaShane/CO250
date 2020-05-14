@@ -19,6 +19,19 @@ matrix Identity(int n) {
   return I;
 }
 
+matrix empty(int n) {
+  matrix m;
+  for (int i = 0; i < n; i++) {
+    vector<Fraction> row;
+    for (int j = 0; j < n; j++) {
+      row.emplace_back(Fraction{0});
+    }
+    m.emplace_back(row);
+  }
+  return m;
+}
+
+
 // matrix_equal(m1, m2) returns true if m1 == m2, and false if otherwise
 // requires: m1 and m2 are of equal dimensions
 // effects: none
@@ -89,11 +102,20 @@ matrix multiply(const matrix &m1, const matrix &m2) {
 matrix operator*(const matrix &a, const matrix &b) {
   matrix product;
   for (unsigned int i = 0; i < a.size(); i++) {
+    //cout << "i: " << i << endl;
     vector<Fraction> row;
     for (unsigned int j = 0; j < b[0].size(); j++) {
       Fraction val{0};
+      //cout << "j: " << j << endl;
       for (unsigned int t = 0; t < a[0].size(); t++) {
+        /*cout << "t: " << t << endl;
+        cout << "a[i][t]: " << a[i][t] << endl;
+        cout << "b[i][t]: " << b[i][t] << endl;
+        cout << "a[i][t]*b[i][t]: " << (a[i][t]*b[t][j]) << endl;*/
+        val.simplify();
         val += (a[i][t]*b[t][j]);
+        val.simplify();
+        //cout << "val: " << val << endl;
       }
       row.emplace_back(val);
     }
@@ -145,62 +167,88 @@ void multiply_row(vector<vector<Fraction>> &m, int i, int c) {
 // requires: m.size() == m[i].size for all i in [0,m.size()-1]
 // effects: allocates data to be returned
 // efficiency: O(n^2)
-vector<vector<Fraction>> inverse(vector<vector<Fraction>> &m_) {
-  vector<vector<Fraction>> m;
-  for (unsigned int i = 0; i < m_.size(); i++) m.push_back(m_[i]);
-  
-  // build an identity matrix I, to be transformed into the inverse of m
-  vector<vector<Fraction>> I;
-  for (unsigned int i = 0; i < m.size(); i++) {
-    vector<Fraction> row;
-    for (unsigned int j = 0; j < m.size(); j++) row.push_back(Fraction(0));
-    I.push_back(row);
-  }
-
-  for (unsigned int i = 0; i < I.size(); i++) {
-    for (unsigned int j = 0; j < I.size(); j++) {
-      if (i == j) I[i][j] = Fraction(1);
-    }
-  }
-
-  for (unsigned int i = 0; i < m.size(); i++) {
-    Fraction t = m[i][i];
-    for (unsigned int j = i; j < m.size(); j++) m[i][j] /= t;
-    for (unsigned int j = 0; j < I.size(); j++) I[i][j] /= t;
-
-    for (unsigned int j = 0; j < m.size(); j++) {
-      if (i != j) {
-        t = m[j][i];
-        for (unsigned int k = 0; k < m.size(); k++) m[j][k] -= (t*m[i][k]);
-        for (unsigned int k = 0; k < I.size(); k++) I[j][k] -= (t*I[i][k]);
+matrix inverse(const matrix &m_) {
+  matrix mat = Identity(m_.size());
+  matrix m = m_;
+  unsigned int N = m.size();
+  while (true) {
+  for (unsigned column = 0; column < N; ++column) { 
+    // Swap row in case our pivot point is not working
+    if (m[column][column] == 0) { 
+      unsigned big = column; 
+      for (unsigned row = 0; row < N; ++row) 
+          if (abs(m[row][column]) > abs(m[big][column])) big = row; 
+      // Print this is a singular matrix, return identity ?
+      if (big == column) fprintf(stderr, "Singular matrix\n"); 
+      // Swap rows     
+      ///cout << "swap rows " << column << " and " << big << endl;      
+      //cout << "m[big][column]: " << m[big][column] << endl;                    
+      swap_rows(m,column,big);
+      swap_rows(mat,column,big);
+      //cout << "mat:" << endl << mat << endl; 
+      //cout << "m: " << endl << m << endl;
+    } 
+    // Set each row in the column to 0  
+    for (unsigned row = 0; row < N; ++row) { 
+      //cout << "(col,row): " << "(" << column << "," << row << ")" << endl;
+      if (row != column) { 
+        Fraction coeff = m[row][column] / m[column][column]; 
+        coeff.simplify();
+        //cout << "coeff: " << coeff << endl;
+        if (coeff != 0) { 
+          for (unsigned j = 0; j < N; ++j) { 
+            m[row][j] -= coeff * m[column][j]; 
+            mat[row][j] -= coeff * mat[column][j]; 
+          } 
+          // Set the element to 0 for safety
+          m[row][column] = 0; 
+        } 
       }
-    }
+        
+    } 
+    matrix_simplify(mat);
+    matrix_simplify(m);
+    //cout << "mat:" << endl << mat << endl; 
+    //cout << "m: " << endl << m << endl;
+  } 
+  // Set each element of the diagonal to 1
+  for (unsigned row = 0; row < N; ++row) { 
+    /*for (unsigned column = 0; column < N; ++column) { 
+      cout << "mat["<<row<<"]["<<column<<"]: " << mat[row][column] << endl;
+      cout << "m["<<row<<"]["<<row<<"]: " << m[row][row] << endl;
+      mat[row][column] /= m[row][row]; 
+      m[row][column] /= m[row][row];
+    } */
+    mat[row] = mat[row] / m[row][row];
+    m[row] = m[row]/m[row][row];
+  }
+  matrix_simplify(mat);
+  matrix_simplify(m);
+  //cout << "mat:" << endl << mat << endl; 
+  //cout << "m: " << endl << m << endl;
+
+  matrix I = Identity(m.size()); 
+  if (matrix_equal(I,m)) break;
   }
 
-  matrix_simplify(I);
-  return I;
+  matrix_simplify(mat);
+  return mat;
 }
 
-matrix inverse_pivot(const matrix &m_) {
-  matrix I = Identity((signed)m_.size());
-  matrix m;
-  for (unsigned int i = 0; i < m_.size(); i++) {
-    vector<Fraction> row;
-    for (unsigned int j = 0; j < m_[i].size(); j++) {
-      row.emplace_back(m_[i][j]);
-    }
-    m.emplace_back(row);
-  }
-
+matrix inverse_pivot(const matrix &m) {
+  matrix P = Identity((signed) m.size());
+  //cout << "formed the identity matrix: " << P << endl;
   for (unsigned int i = 0; i < m.size(); i++) {
-    int pivot = 0;
-    for (unsigned int j = 0; j < m.size(); j++) {
-      if (m[j][i] == Fraction(1)) pivot = j;
+    int max = i;
+    for (unsigned int j = i; j < m.size(); j++) {
+      //cout << "max iteration: " << j << endl;
+      if (abs(m[max][i]) < abs(m[j][i])) max = j;
     }
-    swap_rows(m,i,pivot);
-    swap_rows(I,i,pivot);
+    //cout << "found max: " << max << endl;
+    swap_rows(P, i, max);
+    //cout << "end of iteration: " << i << endl;
   }
-  return I;
+  return P;
 }
 
 // subset(m, basis) returns the matrix subset of m with respect to basis
@@ -208,10 +256,13 @@ matrix inverse_pivot(const matrix &m_) {
 //           basis.size() <= m[i].size() for all i in [0, m.size()-1]
 // effects: allocates data to be returned
 // efficiency: O(n^2)
-vector<vector<Fraction>> subset(vector<vector<Fraction>> &m, vector<int> &basis) {
+matrix subset(const matrix &m, const vector<int> &basis) {
+  //cout << "m[" << m.size() << "x" << m[0].size() << "]" << endl;
+  //cout << "basis: " << basis << endl;
   vector<vector<Fraction>> sub_m;
   for (unsigned int i = 0; i < m.size(); i++) {
     vector<Fraction> row;
+    //cout << "row " << i << endl;
     for (unsigned int j = 0; j < basis.size(); j++) {
       //cout << "(i,j): " << "(" << i << "," << basis[j] << ")" << endl;
       row.push_back(m[i][basis[j]]);

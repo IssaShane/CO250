@@ -29,9 +29,9 @@ bool matrix_equal(vector<vector<Fraction>> &m1, vector<vector<Fraction>> &m2);
 
 // Matrix operations
 matrix Identity(int);
-vector<vector<Fraction>> inverse(vector<vector<Fraction>>&);
+vector<vector<Fraction>> inverse(const matrix&);
 matrix inverse_pivot(const matrix&);
-vector<vector<Fraction>> subset(vector<vector<Fraction>> &m, vector<int> &basis);
+matrix subset(const matrix &m, const vector<int> &basis);
 void matrix_simplify(vector<vector<Fraction>> &m);
 vector<vector<Fraction>> transpose(vector<vector<Fraction>>&);
 void swap_rows(matrix &m, int i, int j);

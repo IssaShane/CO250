@@ -7,6 +7,12 @@ Fraction::Fraction(int num, int denom) {
   this->denom = denom;
 }
 
+Fraction::Fraction(Fraction n, Fraction d) {
+  *this = (n/d);
+  if (this->getDenom() == 0) cout << "zero denom" << endl;
+  //this->simplify();
+}
+
 Fraction::Fraction(int num) {
   this->num = num;
   this->denom = 1;
@@ -55,12 +61,19 @@ Fraction & Fraction::operator*=(const Fraction& b) {
 }
 
 Fraction operator*(const Fraction &a, const Fraction &b) {
+  //cout << "a: " << a << endl << "b: " << b << endl;
   Fraction product(a.getNum()*b.getNum(), b.getDenom()*a.getDenom());
   if (a == Fraction(0) || b == Fraction(0)) return Fraction(0);
   return product;
 }
 
 Fraction operator/(const Fraction &a, const Fraction &b) {
+  Fraction bcheck = b;
+  bcheck.simplify();
+  if (bcheck == Fraction{0}) {
+    cerr << "dividing by 0: a = " << a << " b = " << b << endl;
+    cout << "dividing by 0: a = " << a << " b = " << b << endl;
+  }
   Fraction quotient(a.getNum()*b.getDenom(), a.getDenom()*b.getNum());
   return quotient;
 }
@@ -71,8 +84,12 @@ Fraction & Fraction::operator/=(const Fraction &b) {
 }
 
 bool operator==(const Fraction &a, const Fraction &b) {
-  if (a.getNum() == b.getNum() &&
-      a.getDenom() == b.getDenom()) {
+  Fraction a_ = a;
+  Fraction b_ = b;
+  a_.simplify();
+  b_.simplify();
+  if (a_.getNum() == b_.getNum() &&
+      a_.getDenom() == b_.getDenom()) {
         return true;
       }
   else {
@@ -86,7 +103,7 @@ bool operator!=(const Fraction &a, const Fraction &b) {
 }
 
 bool operator<(const Fraction &a, const Fraction &b) {
-  if (a.getNum()*b.getDenom() < b.getNum()*a.getDenom()) return true;
+  if ((a.getNum()*b.getDenom()) < (b.getNum()*a.getDenom())) return true;
   else return false;
 }
 
@@ -96,7 +113,7 @@ bool operator<=(const Fraction &a, const Fraction &b) {
 }
 
 bool operator>(const Fraction &a, const Fraction &b) {
-  if (a < b) return false;
+  if (a < b || a == b) return false;
   else return true;
 }
 
@@ -120,11 +137,18 @@ int gcd(int x, int y) {
 }
 
 void Fraction::simplify() {
+  //cout << "simplify: " << this->num <<","<<this->denom<<endl;
   if (this->num == 0) {
     this->denom = 1;
     return;
   }
   else if (this->denom == 1) {
+    return;
+  }
+  else if (this->num == this->denom) {
+    //cout << "simplify to one" << endl;
+    this->num = 1;
+    this->denom = 1;
     return;
   }
 
@@ -136,12 +160,14 @@ void Fraction::simplify() {
   if (this->num < 0) {
     this->num *= (-1);
     int factor = gcd(this->num, this->denom);
+    if (factor == 0) return;
     this->num /= factor;
     this->denom /= factor;
     this->num *= (-1);
   }
   else {
     int factor = gcd(this->num, this->denom);
+    if (factor == 0) return;
     this->num /= factor;
     this->denom /= factor;
   }
@@ -178,4 +204,10 @@ istream &operator>>(istream &str, Fraction &a) {
   cin >> denom;
   a = Fraction{num,denom};
   return str;
+}
+
+
+Fraction abs(const Fraction &x) {
+  if (x < 0) return (-1)*x;
+  else return x;
 }

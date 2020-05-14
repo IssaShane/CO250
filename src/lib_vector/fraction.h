@@ -10,6 +10,7 @@ class Fraction {
 
   public:
     Fraction(int num, int denom);
+    Fraction(Fraction, Fraction);
     Fraction(int num);
     Fraction(const Fraction &other);
     Fraction &operator-=(const Fraction &b);
@@ -37,5 +38,6 @@ bool operator>=(const Fraction &a, const Fraction &b);
 std::ostream &operator<<(std::ostream &str, const Fraction &a);
 std::istream &operator>>(std::istream &str, Fraction &a);
 
+Fraction abs(const Fraction&);
 
 #endif
