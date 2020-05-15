@@ -2,3 +2,17 @@ aux1
 canonform1
 canonform2
 canonical1
+canonical2
+canonical4
+iter1
+iter3
+iter4
+iter6
+iter7
+iter8
+phase1_1
+phase1_2
+phase2_1
+solve1
+solve2
+solve3

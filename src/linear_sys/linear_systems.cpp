@@ -107,10 +107,6 @@ vector<Fraction> backward_sub(vector<vector<Fraction>> &m, vector<Fraction> &b) 
   return x;
 }
 
-Fraction abs(Fraction x) {
-  if (x < 0) return (-1)*x;
-  else return x;
-}
 
 matrix pivot(const matrix &m) {
   matrix P = Identity((signed) m.size());
