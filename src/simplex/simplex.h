@@ -24,8 +24,8 @@ LP sef(const LP&);
 void canonicalize(LP &lp);
 void LP_simplify(LP &lp);
 vector<Fraction> simplex_solve(LP &lp);
-vector<Fraction> phase1(const LP&);
-vector<Fraction> phase2(const LP&, const vector<Fraction>&);
+vector<Fraction> phase1(LP&);
+vector<Fraction> phase2(LP&, vector<Fraction>&);
 void simplex_iteration(LP &lp, vector<Fraction> &soln);
 void phase1_iteration(LP&, vector<Fraction> &soln);
 

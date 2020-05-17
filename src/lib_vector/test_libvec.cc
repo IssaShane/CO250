@@ -57,14 +57,16 @@ int main() {
             char c;
             while (cin >> c) if (c == '[') break;
             cin >> v1; 
+            while (cin >> c) if (c == ']') break;
             while (cin >> c) if (c == '[') break;
             cin >> v2;
+            while (cin >> c) if (c == ']') break;
             Fraction prod = inner_product(v1,v2);
             prod.simplify();
             cout << prod << endl;
         }
         else if (cmd == "multfrac") {
-            Fraction f1{-3};
+            Fraction f1{1};
             Fraction f2{1};
             cin >> f1;
             //cout << "f1: " << f1 << endl;
@@ -84,7 +86,7 @@ int main() {
             cout << sum << endl;
         }
         else if (cmd == "divfrac") {
-            Fraction f1{-3};
+            Fraction f1{1};
             Fraction f2{1};
             cin >> f1;
             cin >> f2;
@@ -100,6 +102,30 @@ int main() {
             Fraction diff = f1 - f2;
             diff.simplify();
             cout << diff << endl;
+        }
+        else if (cmd == "readfrac") {
+            Fraction f1{0};
+            cin >> f1;
+            cout << f1 << endl;
+        }
+        else if (cmd == "readvec") {
+            vector<Fraction> vec;
+            cin >> vec;
+            cout << vec << endl;
+        }
+        else if (cmd == "copyfrac") {
+            Fraction f1{0};
+            cin >> f1;
+            Fraction f2 = f1;
+            cout << f2 << endl;
+        }
+        else if (cmd == "test") {
+            vector<Fraction> vec;
+            for (unsigned int i = 0; i < 3; i++) {
+                Fraction frac{(signed)i};
+                vec.emplace_back(frac);
+            }
+            cout << vec << endl;
         }
     }
     return 0;

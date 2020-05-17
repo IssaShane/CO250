@@ -128,13 +128,16 @@ ostream &operator<<(ostream &str, const vector<Fraction> &v) {
 }
 
 istream & operator>>(istream &in, vector<Fraction> &v) {
+  //cout << "frac vec i op" << endl;
   Fraction i{0};
+  //cout << "i at def: " << i << endl;
   while (in >> i) {
+    //cout << "i at read: " << i << endl;
     v.emplace_back(i);
-    //cout << "i: " << i << endl;
+    //cout << "i in v: " << v[v.size()-1] << endl;
   }
-  //cout << "top after vec: " << in.peek() << endl;
   in.clear();
+  //cout << "end frac vec i op" << endl;
   return in;
 }
 

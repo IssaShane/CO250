@@ -45,6 +45,8 @@ int main() {
       vector<Fraction> soln = simplex_solve(lp);
       vec_simplify(soln);
       cout << soln << endl;
+      //cout << "obj val: " << soln*lp.obj + lp.obj_const << endl;
+      //cout << "LP: " << endl << lp << endl;
     }
     else if (cmd == "iter") {
       LP lp;
