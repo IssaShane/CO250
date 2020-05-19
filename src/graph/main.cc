@@ -49,6 +49,22 @@ int main() {
       cin >> c;
       cout << *graphs[c-'a'] << endl;
     }
+    else if (cmd == "removearc") {
+      char c;
+      string startnode;
+      string destnode;
+      cin >> c;
+      cin >> startnode;
+      cin >> destnode;
+      graphs[c-'a']->removeEdge(startnode,destnode);
+    }
+    else if (cmd == "removenode") {
+      char c;
+      string name;
+      cin >> c;
+      cin >> name;
+      graphs[c-'a']->removeNode(name);
+    }
   }
   return 0;
 }

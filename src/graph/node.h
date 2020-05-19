@@ -19,6 +19,7 @@ class Node {
     void addNeighbour(Edge*);
     void addNeighbour(const std::string&);
     void removeNeighbour(Node*);
+    void removeNeighbour(const std::string&);
     void setWeight(Node*, const Fraction &);
     void setWeight(const string&, const Fraction &);
     friend std::ostream &operator<<(std::ostream&,const Node&);

@@ -44,6 +44,16 @@ void Node::removeNeighbour(Node *n) {
   }
 }
 
+void Node::removeNeighbour(const string &name) {
+  for (unsigned int i = 0; i < this->neighbours.size(); i++) {
+    if (this->neighbours[i]->dest->getName() == name) {
+      Edge *backup = this->neighbours[i];
+      this->neighbours.erase(this->neighbours.begin()+i);
+      delete backup;
+    }
+  }
+}
+
 void Node::setWeight(Node *n, const Fraction &weight) {
   for (unsigned int i = 0; i < this->neighbours.size(); i++) {
     if (this->neighbours[i]->dest == n) {

@@ -2,8 +2,24 @@
 
 using namespace std;
 
+Graph::~Graph() {
+  for (unsigned int i = 0; i < this->nodes.size(); i++) {
+    delete this->nodes[i];
+  }
+}
+
 void Graph::addNode(Node *n) {
   this->nodes.emplace_back(n);
+}
+
+void Graph::removeNode(const string &name) {
+  for (unsigned int i = 0; i < this->nodes.size(); i++) {
+    if (this->nodes[i]->getName() == name) {
+      Node * backup = this->nodes[i];
+      this->nodes.erase(this->nodes.begin()+i);
+      delete backup;
+    }
+  }
 }
 
 void Graph::addEdge(Node *start, Node *dest) {
@@ -41,6 +57,14 @@ void Graph::setWeight(const string &start, const string &dest,
   for (unsigned int i = 0; i < this->nodes.size(); i++) {
     if (this->nodes[i]->getName() == start) {
       this->nodes[i]->setWeight(dest, weight);
+    }
+  }
+}
+
+void Graph::removeEdge(const string &start, const string &dest) {
+  for (unsigned int i = 0; i < this->nodes.size(); i++) {
+    if (this->nodes[i]->getName() == start) {
+      this->nodes[i]->removeNeighbour(dest);
     }
   }
 }
