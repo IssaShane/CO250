@@ -1,0 +1,9 @@
+new a
+addnode a u
+addnode a v
+addnode a w
+addarc a u v
+addarc a v w
+addarc a w u
+print a
+quit

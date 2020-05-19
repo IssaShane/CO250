@@ -1,0 +1,5 @@
+new a
+addnode a s
+addnode a t
+addarc a s t
+quit
