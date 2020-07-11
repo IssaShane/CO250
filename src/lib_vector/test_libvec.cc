@@ -1,6 +1,7 @@
 #include "matrix_tools.h"
 #include <iostream>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -126,6 +127,27 @@ int main() {
                 vec.emplace_back(frac);
             }
             cout << vec << endl;
+        }
+        else if (cmd == "addcol") {
+            vector<Fraction> col;
+            matrix A;
+            cin >> A;
+            cin >> col;
+            add_column(A, col);
+            cout << A << endl;
+        }
+        else if (cmd == "fracequal") {
+            Fraction a, b;
+            cin >> a;
+            cin >> b;
+            if (a == b) cout << "true" << endl;
+            else cout << "false" << endl;
+        }
+        else if (cmd == "fracsimplify") {
+            Fraction a;
+            cin >> a;
+            a.simplify();
+            cout << a << endl;
         }
     }
     return 0;

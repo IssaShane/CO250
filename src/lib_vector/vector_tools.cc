@@ -2,13 +2,20 @@
 
 using namespace std;
 
-// vec_simplify(v) simplifies v
+// vec_simplify(v) simplifies every entrant in the vector v
+// requires: none
+// effects: mutates v
+// efficiency: O(n²)
 void vec_simplify(vector<Fraction> &v) {
   for (unsigned int i = 0; i < v.size(); i++) {
     v[i].simplify();
   }
 }
 
+// contains(v, j) returns true iff j is equal to some entrant of the vector v
+// requires: none
+// effects: none
+// efficiency: O(n)
 bool contains(const vector<int> &v, int j) {
   for (unsigned int i = 0; i < v.size(); i++) {
     if (v[i] == j) return true;
@@ -16,6 +23,11 @@ bool contains(const vector<int> &v, int j) {
   return false;
 }
 
+// subset_compliment(basis, vec) gives the vector composed of the entrants 
+//   of the vector vec at all indices not existing in the vector basis
+// requires: none
+// effects: creates data
+// efficiency: O(n)
 vector<Fraction> subset_compliment(const vector<int> &basis, const vector<Fraction> vec) {
   vector<Fraction> retval;
   for (unsigned int i = 0, j = 0; i < vec.size(); i++) {
@@ -27,6 +39,10 @@ vector<Fraction> subset_compliment(const vector<int> &basis, const vector<Fracti
   return retval;
 }
 
+// operator+(a,b) gives the vector-vector sum of the vectors a and b
+// requires: dim(a) == dim(b)
+// effects: creates data
+// efficiency: O(n)
 vector<Fraction> operator+(const vector<Fraction> &a, const vector<Fraction> &b) {
   vector<Fraction> retval;
   for (unsigned int i = 0; i < a.size(); i++) {
@@ -35,6 +51,10 @@ vector<Fraction> operator+(const vector<Fraction> &a, const vector<Fraction> &b)
   return retval;
 }
 
+// operator gives the vector-vector difference of the vectors a and b
+// requires: dim(a) == dim(b)
+// effects: creates data
+// efficiency: O(n)
 vector<Fraction> operator-(const vector<Fraction> &a, const vector<Fraction> &b) {
   vector<Fraction> diff;
   for (unsigned int i = 0; i < a.size(); i++) {
@@ -43,6 +63,10 @@ vector<Fraction> operator-(const vector<Fraction> &a, const vector<Fraction> &b)
   return diff;
 }
 
+// operator*(c,v) returns the product of the vector v and the constant c
+// requires: none
+// effects: creates data
+// efficiency: O(n)
 vector<Fraction> operator*(const Fraction &c, const vector<Fraction> &v) {
   vector<Fraction> product = v;
   for (unsigned int i = 0; i < v.size(); i++) {
@@ -51,6 +75,10 @@ vector<Fraction> operator*(const Fraction &c, const vector<Fraction> &v) {
   return product;
 }
 
+// operator/(v,c) returns the product of the vector v and the constant (1/c)
+// requires: none
+// effects: creates data
+// efficiency: O(n)
 vector<Fraction> operator/(const vector<Fraction> &v, const Fraction &c) {
   vector<Fraction> product = v;
   for (unsigned int i = 0; i < v.size(); i++) {
@@ -127,20 +155,23 @@ ostream &operator<<(ostream &str, const vector<Fraction> &v) {
   return str;
 }
 
+// operator>>(in,v) takes a group of fractions from the stream in, and stores
+//   them in the vector v
+// effects: mutates in, v
+// efficiency: O(n²)
 istream & operator>>(istream &in, vector<Fraction> &v) {
-  //cout << "frac vec i op" << endl;
   Fraction i{0};
-  //cout << "i at def: " << i << endl;
   while (in >> i) {
-    //cout << "i at read: " << i << endl;
     v.emplace_back(i);
-    //cout << "i in v: " << v[v.size()-1] << endl;
   }
   in.clear();
-  //cout << "end frac vec i op" << endl;
   return in;
 }
 
+// operator>>(in,v) takes a group of integers from the stream in, and stores
+//   them in the vector v
+// effects: mutates in, v
+// efficiency: O(n²)
 istream & operator>>(istream &in, vector<int> &v) {
   int i;
   while (in >> i) {
@@ -150,6 +181,9 @@ istream & operator>>(istream &in, vector<int> &v) {
   return in;
 }
 
+// operator<<(out, v) outputs all entrants in the vector v to the stream out
+// effects: outputs to out
+// efficiency: O(n)
 ostream & operator<<(ostream &out, const vector<int> &v) {
   for (unsigned int i = 0; i < v.size(); i++) {
     out << v[i];
@@ -158,6 +192,9 @@ ostream & operator<<(ostream &out, const vector<int> &v) {
   return out;
 }
 
+// merge(array,l,m,r) carries out the merge step of the merge-sort algorithm
+// effects: mutates array
+// efficiency: O(n)
 void merge(vector<int> &array, int l, int m, int r) {
   int i, j, k, nl, nr;
   //size of left and right sub-arrays
@@ -187,6 +224,10 @@ void merge(vector<int> &array, int l, int m, int r) {
     j++; k++;
   }
 }
+
+// mergeSort(array,l,r) sorts the array according to the merge-sort algorithm
+// effects: mutates array, uses recursion
+// efficiency: O(nlogn)
 void mergeSort(vector<int> &array, int l, int r) {
   if(l < r) {
     int m = l+(r-l)/2;
@@ -197,6 +238,9 @@ void mergeSort(vector<int> &array, int l, int r) {
   }
 }
 
+// sort(array) sorts array by ascending order using the merge-sort algorithm
+// effects: mutates array, uses recursion
+// efficiency: O(nlogn)
 void sort(vector<int> &array) {
   mergeSort(array,0,(signed)array.size()-1);
 }
