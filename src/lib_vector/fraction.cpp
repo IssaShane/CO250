@@ -2,6 +2,11 @@
 
 using namespace std;
 
+Fraction::Fraction() {
+  this->num = 0;
+  this->denom = 1;
+}
+
 Fraction::Fraction(int num, int denom) { 
   this->num = num;
   this->denom = denom;
@@ -23,50 +28,77 @@ Fraction::Fraction(const Fraction &other) {
   this->denom = other.getDenom();
 }
 
+// operator+(a,b) returns the value of the sum of the fractions a and b
+// Efficiency: O(1)
 Fraction operator+(const Fraction &a, const Fraction & b) {
   Fraction sum(b.getDenom()*a.getNum() + a.getDenom()*b.getNum(), 
                b.getDenom()*a.getDenom());
   return sum;
 }
 
+// operator-(a,b) returns the value of the difference of the fractions a and b
+// Efficiency: O(1)
 Fraction operator-(const Fraction & a, const Fraction & b) {
   Fraction diff(b.getDenom()*a.getNum() - a.getDenom()*b.getNum(), 
                b.getDenom()*a.getDenom());
   return diff;
 }
 
+// operator-=(b) subtracts the value of the fraction b from this
+// Effects: mutates data
+// Efficiency: O(1)
+// Requires: this is an lvalue
 Fraction & Fraction::operator-=(const Fraction &b) {
   *this = *this - b;
   return *this;
 }
 
+// operator+=(b) adds the value of the fraction b to this
+// Effects: mutates data
+// Efficiency: O(1)
+// Requires: this is an lvalue
 Fraction & Fraction::operator+=(const Fraction &b) {
   *this = *this + b;
   return *this;
 }
 
+// operator*(c,a) returns the product of the fraction a and the constant c
+// Efficiency: O(1)
 Fraction operator*(int c, const Fraction &a) {
   Fraction product(c*a.getNum(), a.getDenom());
   return product;
 }
 
+// operator*=(b) multiplies this by the constant b
+// Effects: mutates data
+// Efficiency: O(1)
+// Requires: this is an lvalue
 Fraction & Fraction::operator*=(int b) {
   *this = b * (*this);
   return *this;
 }
 
+// operator*=(b) multiplies this by the fraction b
+// Effects: mutates data
+// Efficiency: O(1)
+// Requires: this is an lvalue
 Fraction & Fraction::operator*=(const Fraction& b) {
   *this = b * (*this);
   return *this;
 }
 
+// operator*(a,b) returns the product of the fractions a and b
+// Efficiency: O(1)
 Fraction operator*(const Fraction &a, const Fraction &b) {
-  //cout << "a: " << a << endl << "b: " << b << endl;
   Fraction product(a.getNum()*b.getNum(), b.getDenom()*a.getDenom());
   if (a == Fraction(0) || b == Fraction(0)) return Fraction(0);
   return product;
 }
 
+// operator/(a,b) returns the quotient of the fraction a by the fraction b,
+//   and gives an error if attempting to divide by zero
+// Effects: outputs to standard output and standard error
+// Efficiency: O(n)
 Fraction operator/(const Fraction &a, const Fraction &b) {
   Fraction bcheck = b;
   bcheck.simplify();
@@ -78,11 +110,17 @@ Fraction operator/(const Fraction &a, const Fraction &b) {
   return quotient;
 }
 
+// operator/=(b) divides this by the fraction b
+// Effects: mutates data
+// Efficiency: O(1)
+// Requires: this is an lvalue
 Fraction & Fraction::operator/=(const Fraction &b) {
   *this = *this / b;
   return *this;
 }
 
+// operator==(a,b) returns true iff a == b, and false otherwise
+// Efficiency: O(1)
 bool operator==(const Fraction &a, const Fraction &b) {
   Fraction a_ = a;
   Fraction b_ = b;
@@ -97,31 +135,48 @@ bool operator==(const Fraction &a, const Fraction &b) {
   }
 }
 
+// operator!=(a,b) returns true iff a!=b, and false otherwise
+// Efficiency: O(1)
 bool operator!=(const Fraction &a, const Fraction &b) {
   if (a == b) return false;
   else return true;
 }
 
+// operator<(a,b) returns true iff the fraction a is of lesser value to the 
+//   fraction b
+// Efficiency: O(1)
 bool operator<(const Fraction &a, const Fraction &b) {
   if ((a.getNum()*b.getDenom()) < (b.getNum()*a.getDenom())) return true;
   else return false;
 }
 
+// operator<=(a,b) returns true iff the fraction a is of lesser or equal
+//   value to the fraction b
+// Efficiency: O(1)
 bool operator<=(const Fraction &a, const Fraction &b) {
   if (a < b || a == b) return true;
   else return false;
 }
 
+// operator>(a,b) returns true iff the fraction a is of greater value than
+//   the fraction b
+// Efficiency: O(1)
 bool operator>(const Fraction &a, const Fraction &b) {
   if (a < b || a == b) return false;
   else return true;
 }
 
+// operator>=(a,b) returns true iff the fraction a is of greater or equal 
+//   value to the fraction b
+// Efficiency: O(1)
 bool operator>=(const Fraction &a, const Fraction &b) {
   if (a > b || a == b) return true;
   else return false;
 }
 
+// gcx(x,y) finds the greatest common denominator between x and y
+// Efficiency: O(n)
+// Requires: x,y != 0
 int gcd(int x, int y) {
   // do until the two numbers become equal
 	while (x != y)
@@ -136,8 +191,11 @@ int gcd(int x, int y) {
   return x;
 }
 
+// simplify() reduces this to its most simplified fractional form
+// Effects: mutates data
+// Efficiency: O(n)
+// Requires: this does not have a denominator of zero
 void Fraction::simplify() {
-  //cout << "simplify: " << this->num <<","<<this->denom<<endl;
   if (this->num == 0) {
     this->denom = 1;
     return;
@@ -146,7 +204,6 @@ void Fraction::simplify() {
     return;
   }
   else if (this->num == this->denom) {
-    //cout << "simplify to one" << endl;
     this->num = 1;
     this->denom = 1;
     return;
@@ -185,12 +242,21 @@ int Fraction::getDenom() const {
   return this->denom;
 }
 
+// operator<<(str,a) outputs the value of this to the stream str in the form
+//   [numerator]/[denominator]
+// Effects: outputs to str
+// Efficiency: O(1)
+// Requires: this is an lvalue
 std::ostream &operator<<(std::ostream &str, const Fraction &a) {
   if (a.getDenom() == 1) str << a.getNum();
   else str << a.getNum() << "/" << a.getDenom();
   return str;
 }
 
+// operator>>(str,a) takes the value of a fraction from str, and stores it in a
+// Effects: mutates a
+// Efficiency: O(n)
+// Requires: a is an lvalue
 istream &operator>>(istream &str, Fraction &a) {
   int num, denom;
   char c;

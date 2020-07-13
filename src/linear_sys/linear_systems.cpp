@@ -1,9 +1,19 @@
 #include "linear_systems.h"
 
+// l(m,i,n) gives the coefficient c : c*m(i,n) == m(n,n)
+// requires: 0 <= i,n <= dim(m)
+//           m is an nxn matrix
+// effects: creates data
+// efficiency: O(1)
 Fraction l(const vector<vector<Fraction>> &m, int i, int n) {
   return m[i][n]/m[n][n];
 }
 
+// eliminate_col(m,n) performs all required matrix row operations to set all
+//   values in the row n below the diagonal to zero
+// effects: mutates m
+// requires: 0 <= dim(m) <= n
+// efficiency: O(n²)
 void eliminate_col(vector<vector<Fraction>> &m, int n) {
   for (unsigned int j = n+1; j < m.size(); j++) {
     if(m[n][n] != Fraction(0)) combine_row(m, n, j, (-1)*l(m,j,n));
@@ -20,6 +30,11 @@ void eliminate_col(vector<vector<Fraction>> &m, int n) {
   }
 }
 
+// lower_triangular(m) gives the lower triangular matrix L : LU = m for an 
+//   upper triangular matrix U, and an nxn matrix m
+// requries: m is an nxn matrix
+// effects: creates data
+// efficiency: O(n²)
 vector<vector<Fraction>> lower_triangular(const vector<vector<Fraction>> &m) {
   vector<vector<Fraction>> L = Identity((signed)m.size());
 
@@ -32,6 +47,11 @@ vector<vector<Fraction>> lower_triangular(const vector<vector<Fraction>> &m) {
   return L;
 }
 
+// upper_triangular(m) gives the upper triangular matrix U : LU = m for a
+//   lower triangular matrix L, and an nxn matrix m
+// requires: m is an nxn matrix
+// effects: creates data
+// efficiency: O(n²)
 vector<vector<Fraction>> upper_triangular(const vector<vector<Fraction>> &m) {
   vector<vector<Fraction>> m1 = m;
   for (unsigned int i = 0; i < m1[0].size()-1; i++) eliminate_col(m1, i); 
@@ -44,6 +64,11 @@ vector<vector<Fraction>> upper_triangular(const vector<vector<Fraction>> &m) {
   return m1;
 }
 
+// LU_decomp(m) gives a vector (L,U) where L is a lower triangular matrix and U
+//   is an upper triangular matrix : LU = m
+// requires: m must be an nxn matrix with an appropriate pivot matrix I
+// effects: creates data
+// efficiency: O(n²)
 vector<matrix> LU_decomp(const matrix &m) {
   matrix L = Identity((signed) m.size());
   matrix U = m;
@@ -68,6 +93,11 @@ Fraction find_x2(vector<vector<Fraction>> &m, vector<Fraction> &b, Fraction x1) 
   return retval;
 }
 
+// forward_sub(m,b) solves the system my=b for the vector y, matrix m, and  
+//   solution set b, where m is lower triangular
+// requires: m is lower triangular
+// effects: creates data
+// efficiency: O(n)
 vector<Fraction> forward_sub(vector<vector<Fraction>> &m, vector<Fraction> &b) {
   
   vector<Fraction> y;
@@ -83,6 +113,11 @@ vector<Fraction> forward_sub(vector<vector<Fraction>> &m, vector<Fraction> &b) {
   return y;
 }
 
+// backward_sub(m,b) solves the system my=b for the vector y, matrix m, and  
+//   solution set b, where m is upper triangular
+// requires: m is upper triangular
+// effects: creates data
+// efficiency: O(n)
 vector<Fraction> backward_sub(vector<vector<Fraction>> &m, vector<Fraction> &b) {
   vector<Fraction> x;
   for (unsigned int i = 0; i < m.size(); i++) x.emplace_back(0);
@@ -107,7 +142,11 @@ vector<Fraction> backward_sub(vector<vector<Fraction>> &m, vector<Fraction> &b) 
   return x;
 }
 
-
+// pivot(m) gives the pivot matrix required to prevent an element along the
+//   diagonal of m from being zero during LU decomposition
+// requires: m is an nxn matrix
+// effects: creates data
+// efficiency: O(n²)
 matrix pivot(const matrix &m) {
   matrix P = Identity((signed) m.size());
   //cout << "formed the identity matrix: " << P << endl;
@@ -124,22 +163,18 @@ matrix pivot(const matrix &m) {
   return P;
 }
 
+// LU_Solve(m,b) returns the solution to the system mx=b via LU decomposition
+// requires: m is an invertible nxn matrix
+// effects: creates data
+// efficiency: O(n²)
 vector<Fraction> LU_Solve(const matrix &m, const vector<Fraction> &b) {
-  //cout << "LU_Solve" << endl;
   matrix P = pivot(m);
-  //cout << "Pivot matrix found: " << endl << P << endl;
   matrix m_ = multiply(P,m);
-  //cout << "PM: " << endl << m_ << endl;
   vector<Fraction> b_ = multiply(P,b);
-  //cout << "Pb: " << endl << b_ << endl;
   vector<matrix> LU = LU_decomp(m_);
   matrix L = LU[0];
-  //cout << "found L: " << endl << L << endl;
   matrix U = LU[1];
-  //cout << "found U: " << endl << U << endl;
   vector<Fraction> y = forward_sub(L,b_);
-  //cout << "forward substituted" << endl;
-  //cout << "y: " << y << endl;
   vector<Fraction> x = backward_sub(U,y);
   
   return x;

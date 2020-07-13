@@ -2,6 +2,10 @@
 
 using namespace std;
 
+// aux(lp_) gives the auxiliary LP to lp_
+// requires: lp_ is a valid LP
+// effects: creates data
+// efficiency: O(n²)
 LP aux(const LP& lp_) {
   LP aux = lp_;
   matrix I = Identity(aux.A.size());
@@ -27,9 +31,11 @@ LP aux(const LP& lp_) {
   return aux;
 }
 
+// aux_soln(lp) gives the auxiliary solution to lp
+// effects: creates data
+// efficiency: O(n)
 vector<Fraction> aux_soln(const LP& lp) {
   vector<Fraction> soln;
-  //cout << "A.size(): " << lp.A.size() << endl << "b.size(): " <<lp.b.size() << endl;
   for (unsigned int i = 0; i < lp.A[0].size()-lp.b.size(); i++) {
     soln.emplace_back(Fraction{0});
   }
@@ -39,6 +45,9 @@ vector<Fraction> aux_soln(const LP& lp) {
   return soln;
 }
 
+// sef(lp) gives the standard equality form for lp
+// effects: creates data
+// efficiency: O(n)
 LP sef(const LP &lp) {
   LP sef = lp;
   for (unsigned int i = 0; i < sef.obj.size(); i++) {
@@ -49,6 +58,9 @@ LP sef(const LP &lp) {
 
 // NOTE: canonical_form assumes that the indices of basis begin at 0 (i.e. the
 //   first column of constraints is column 0)
+// canonical_form(lp) tells whether or not lp is in canonical form
+// effects: none
+// efficiency: O(n²)
 bool canonical_form(const LP &lp) {
   // Check A(B) == I
   for (unsigned int i = 0; i < lp.basis.size(); i++) {
@@ -69,6 +81,11 @@ bool canonical_form(const LP &lp) {
   return true;
 }
 
+// subset(obj,basis) gives the elements of obj at all indicies represented as
+//   elements of basis
+// effects: creates data
+// requires: for each i in basis, 0 <= i <= dim(obj)
+// efficiency: O(n)
 vector<Fraction> subset(const vector<Fraction> &obj, const vector<int> &basis) {
   vector<Fraction> retval;
   for (unsigned int i = 0; i < basis.size(); i++) {
@@ -77,6 +94,9 @@ vector<Fraction> subset(const vector<Fraction> &obj, const vector<int> &basis) {
   return retval;
 }
 
+// canonicalize(lp) places lp in its canonical form for its basis
+// effects: mutates lp
+// efficiency: O(n²)
 void canonicalize(LP &lp) {
   matrix old_A = lp.A;
   vector<Fraction> old_b = lp.b;
@@ -100,6 +120,9 @@ void canonicalize(LP &lp) {
   LP_simplify(lp);
 }
 
+// operator>>(in,l) takes an LP from the stream in and stores it in l
+// effects: mutates l
+// efficiency: O(n²)
 std::istream & operator>>(std::istream& in, LP& l) {
   char c;
   in >> l.A;
@@ -116,6 +139,9 @@ std::istream & operator>>(std::istream& in, LP& l) {
   return in;
 }
 
+// operator<<(out,l) outputs the contents of the LP l to the stream out
+// effects: outputs to a stream
+// efficiency: O(n²)
 std::ostream & operator<<(std::ostream &out, const LP &l) {
   out << "A[" << l.A.size() << "x" << l.A[0].size() << "]:" << endl << l.A << endl;
   out << "b["<<l.b.size() << "]: " << l.b << endl;
@@ -124,6 +150,9 @@ std::ostream & operator<<(std::ostream &out, const LP &l) {
   return out;
 }
 
+// LP_simplify(lp) simplifies all fractional entrants in all elements of lp
+// effects: mutates lp
+// efficiency: O(n³)
 void LP_simplify(LP &lp) {
   matrix_simplify(lp.A);
   vec_simplify(lp.b);
@@ -132,6 +161,10 @@ void LP_simplify(LP &lp) {
   vec_simplify(lp.b);
 }
 
+// simplex_solve(lp) solves lp using the simplex algorithm
+// requires: lp is in SEF
+// effects: mutates lp, creates data
+// efficiency: O(n⁴)
 vector<Fraction> simplex_solve(LP &lp) {
   // b[i] >= 0
   for (unsigned int i = 0; i < lp.b.size(); i++) {
@@ -160,6 +193,11 @@ vector<Fraction> simplex_solve(LP &lp) {
   return phase2_soln;
 }
 
+// phase1(lp_) performs the first phase of two-phase simplex: finding a proper
+//   feasible solution to lp_
+// requires: lp_ is an LP not yet in auxiliary form
+// effects: creates data
+// efficiency: O(n⁴)
 vector<Fraction> phase1(LP& lp_) {
   LP lp = aux(lp_);
   vector<Fraction> soln = aux_soln(lp);
@@ -180,6 +218,11 @@ vector<Fraction> phase1(LP& lp_) {
   }
 }
 
+// phase2(lp, soln) performs the second phase of two-phase simplex: refining
+//   an initial feasible solution to an optimal solution
+// requires: lp is an LP not in auxiliary form
+// effects: mutates lp and soln, creates data
+// efficiency: O(n⁴)
 vector<Fraction> phase2(LP& lp, vector<Fraction> &soln) {
   while (true) {
     if (optimal(lp)) {
@@ -194,6 +237,11 @@ vector<Fraction> phase2(LP& lp, vector<Fraction> &soln) {
   }
 }
 
+// simplex_iteration(lp, soln) performs one iteration of the simplex algorithm 
+//   given the current solution, soln
+// requires: lp is a valid lp with a bound
+// effects: mutates lp and soln
+// efficiency: O(n³)
 void simplex_iteration(LP &lp, vector<Fraction> &soln) {
   LP_simplify(lp);
   // find k : lp.obj[k] <= 0 && k is not in lp.basis
@@ -246,6 +294,10 @@ void simplex_iteration(LP &lp, vector<Fraction> &soln) {
   vec_simplify(soln);
 }
 
+// optimal(lp) returns true iff the basic solution to lp is the optimal solution
+// requires: lp is a valid LP
+// effects: none
+// efficiency: O(n)
 bool optimal(const LP& lp) {
   for (unsigned int i = 0, j = 0; i < lp.obj.size(); i++) {
     if (i != (unsigned) lp.basis[j]) {
@@ -256,6 +308,10 @@ bool optimal(const LP& lp) {
   return true;
 }
 
+// unbounded(lp) returns true iff lp is unbounded
+// requires: lp is a valid LP
+// effects: none
+// efficiency: O(n²)
 bool unbounded(const LP& lp) {
   matrix Ab = subset(lp.A,lp.basis);
   for (unsigned int i =0; i < Ab.size(); i++) {

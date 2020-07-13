@@ -3,8 +3,8 @@
 using namespace std;
 
 // Identity(n) returns the nxn identity matrix
-// requires: none
-// effects: none
+// requires: n >= 1
+// effects: creates data
 // efficiency: O(n²)
 matrix Identity(int n) {
   matrix I;
@@ -19,6 +19,10 @@ matrix Identity(int n) {
   return I;
 }
 
+// empty(n) returns an nxn matrix filled entirely with zeros
+// requires: n >= 1
+// effects: creates data
+// efficiency: O(n²)
 matrix empty(int n) {
   matrix m;
   for (int i = 0; i < n; i++) {
@@ -31,7 +35,6 @@ matrix empty(int n) {
   return m;
 }
 
-
 // matrix_equal(m1, m2) returns true if m1 == m2, and false if otherwise
 // requires: m1 and m2 are of equal dimensions
 // effects: none
@@ -43,7 +46,6 @@ bool matrix_equal(vector<vector<Fraction>> &m1, vector<vector<Fraction>> &m2) {
   }
   return true;
 }
-
 
 // multiply(matrix, vec) returns the product of matrix and vec in the 
 //   orientation matrix*vec
@@ -58,18 +60,21 @@ vector<int> multiply(const vector<vector<int>> &matrix, const vector<int> &vec) 
   return product;
 }
 
+// multiply(matrix, vec) returns the product of matrix and vec
+// requires: dim(matrix) == dim(vec)
+// effects: creates data
+// efficiency: O(n²)
 vector<Fraction> multiply(const vector<vector<Fraction>> &matrix, const vector<Fraction> &vec) {
   vector <Fraction> product;
   for (unsigned int i = 0; i < matrix.size(); i++) {
     product.push_back(inner_product(matrix[i], vec));
   }
-  //cout << "col size: " << product.size() << endl;
   return product;
 }
 
 // multiply(m1, m2) returns the product of m1 and m2 in the orientation m1*m2
 // Requires: m1 and m2 are of compatible dimensions
-// Effects: None
+// Effects: creates data
 // Efficiency: O(n^3)
 vector<vector<int>> multiply(const vector<vector<int>> &m1, const vector<vector<int>> &m2) {
   vector<vector<int>> product;
@@ -99,23 +104,17 @@ matrix multiply(const matrix &m1, const matrix &m2) {
   return retval;
 }
 
+// operator*(a,b) returns the result of multiply(a,b)
 matrix operator*(const matrix &a, const matrix &b) {
   matrix product;
   for (unsigned int i = 0; i < a.size(); i++) {
-    //cout << "i: " << i << endl;
     vector<Fraction> row;
     for (unsigned int j = 0; j < b[0].size(); j++) {
       Fraction val{0};
-      //cout << "j: " << j << endl;
       for (unsigned int t = 0; t < a[0].size(); t++) {
-        /*cout << "t: " << t << endl;
-        cout << "a[i][t]: " << a[i][t] << endl;
-        cout << "b[i][t]: " << b[i][t] << endl;
-        cout << "a[i][t]*b[i][t]: " << (a[i][t]*b[t][j]) << endl;*/
         val.simplify();
         val += (a[i][t]*b[t][j]);
         val.simplify();
-        //cout << "val: " << val << endl;
       }
       row.emplace_back(val);
     }
@@ -163,6 +162,16 @@ void multiply_row(vector<vector<Fraction>> &m, int i, int c) {
   }
 }
 
+// add_column(m, col) adds the column col onto the end of the matrix m
+// requires: col.size() == m.size()
+// effects: mutates m
+// efficiency: O(n)
+void add_column(matrix &m, const vector<Fraction> &col) {
+  for (unsigned int i = 0; i < m.size(); i++) {
+    m[i].emplace_back(col[i]);
+  }
+}
+
 // inverse(m) returns the value of the inverse of the matrix m
 // requires: m.size() == m[i].size for all i in [0,m.size()-1]
 // effects: allocates data to be returned
@@ -180,21 +189,15 @@ matrix inverse(const matrix &m_) {
           if (abs(m[row][column]) > abs(m[big][column])) big = row; 
       // Print this is a singular matrix, return identity ?
       if (big == column) fprintf(stderr, "Singular matrix\n"); 
-      // Swap rows     
-      ///cout << "swap rows " << column << " and " << big << endl;      
-      //cout << "m[big][column]: " << m[big][column] << endl;                    
+      // Swap rows                        
       swap_rows(m,column,big);
       swap_rows(mat,column,big);
-      //cout << "mat:" << endl << mat << endl; 
-      //cout << "m: " << endl << m << endl;
     } 
     // Set each row in the column to 0  
     for (unsigned row = 0; row < N; ++row) { 
-      //cout << "(col,row): " << "(" << column << "," << row << ")" << endl;
       if (row != column) { 
         Fraction coeff = m[row][column] / m[column][column]; 
         coeff.simplify();
-        //cout << "coeff: " << coeff << endl;
         if (coeff != 0) { 
           for (unsigned j = 0; j < N; ++j) { 
             m[row][j] -= coeff * m[column][j]; 
@@ -208,24 +211,14 @@ matrix inverse(const matrix &m_) {
     } 
     matrix_simplify(mat);
     matrix_simplify(m);
-    //cout << "mat:" << endl << mat << endl; 
-    //cout << "m: " << endl << m << endl;
   } 
   // Set each element of the diagonal to 1
   for (unsigned row = 0; row < N; ++row) { 
-    /*for (unsigned column = 0; column < N; ++column) { 
-      cout << "mat["<<row<<"]["<<column<<"]: " << mat[row][column] << endl;
-      cout << "m["<<row<<"]["<<row<<"]: " << m[row][row] << endl;
-      mat[row][column] /= m[row][row]; 
-      m[row][column] /= m[row][row];
-    } */
     mat[row] = mat[row] / m[row][row];
     m[row] = m[row]/m[row][row];
   }
   matrix_simplify(mat);
   matrix_simplify(m);
-  //cout << "mat:" << endl << mat << endl; 
-  //cout << "m: " << endl << m << endl;
 
   matrix I = Identity(m.size()); 
   if (matrix_equal(I,m)) break;
@@ -235,18 +228,20 @@ matrix inverse(const matrix &m_) {
   return mat;
 }
 
+// inverse_pivot(m) gives the matrix m_ where for nxn matrices A, A_ : mA=A_, 
+//   m_A_ = A; that is to say, for a pivot matrix m, inverse_pivot(m) gives the
+//   inverse of that pivot matrix
+// effects: creates data
+// requires: m is an nxn pivot matrix
+// efficiency: O(n²)
 matrix inverse_pivot(const matrix &m) {
   matrix P = Identity((signed) m.size());
-  //cout << "formed the identity matrix: " << P << endl;
   for (unsigned int i = 0; i < m.size(); i++) {
     int max = i;
     for (unsigned int j = i; j < m.size(); j++) {
-      //cout << "max iteration: " << j << endl;
       if (abs(m[max][i]) < abs(m[j][i])) max = j;
     }
-    //cout << "found max: " << max << endl;
     swap_rows(P, i, max);
-    //cout << "end of iteration: " << i << endl;
   }
   return P;
 }
@@ -341,22 +336,16 @@ void swap_rows(matrix &m, int i, int j) {
 // Effects: mutates m
 // Requires: m is empty
 istream & operator>>(istream &in, matrix & m) {
-  //cout << "matrix i op" << endl;
   char c;
   bool begun = false;
   while (in >> c) {
     if (c == ']') break;
     if (c == '[') begun = true;
-    //cout << "c: " << c << endl;
     vector<Fraction> row;
     in >> row;
     
     if (begun) m.emplace_back(row);
-    //cout << "top after row: " << in.peek() << endl;
   }
-  //cout << "top: " << in.peek() << endl;
-  //cout << "exited loop" << endl;
-  //cout << "end matrix i op" << endl;
   in.clear();
   return in;
 } 
