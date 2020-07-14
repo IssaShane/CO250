@@ -8,10 +8,18 @@ Graph::~Graph() {
   }
 }
 
+// addNode(n) adds the pointer n to the list of Node pointers of this graph
+// requires: n is not a nullptr
+// effects: mutates this->nodes
+// efficiency: O(1)
 void Graph::addNode(Node *n) {
   this->nodes.emplace_back(n);
 }
 
+// removeNode(name) removes the node of the given name from this graph. as well
+//   as from the neighbours of all of the other nodes
+// effects: mutates this->nodes
+// efficiency: O(n²)
 void Graph::removeNode(const string &name) {
   // remove node from the outflow of all of its in-neighbours
   for (unsigned int i = 0; i < this->nodes.size(); i++) {

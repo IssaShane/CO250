@@ -16,11 +16,22 @@ Node::~Node() {
     delete this->neighbours[i];
 }
 
+// addNeighbour(n) adds a pointer to an edge from this node to n 
+//   with a weight of zero to this->neighbours, which represents
+//   the outflow of this node
+// requires: n is not nullptr
+// effects: mutates data, creates data
+// efficiency: O(1)
 void Node::addNeighbour(Node* n) {
   Edge* newedge = new Edge{this,n,0};
   this->neighbours.emplace_back(newedge);
 }
 
+// addNeighbour(n, isdest) adds a pointer to an edge to this->neighbours,
+//   where n is in the outflow of this node iff isdest == true
+// requires: n is not nullptr
+// effects: mutates data, creates data
+// efficiency: O(1)
 void Node::addNeighbour(Node *n, bool isdest) {
   Edge* newedge;
   if (isdest) newedge = new Edge{this,n,0};
@@ -28,13 +39,19 @@ void Node::addNeighbour(Node *n, bool isdest) {
   this->neighbours.emplace_back(newedge);
 }
 
+// addNeighbour(e) adds the edge pointer e to this->neighbours
+// requires: e is not nullptr
+// effects: mutates data
+// efficiency: O(1)
 void Node::addNeighbour(Edge *e) {
   this->neighbours.emplace_back(e);
 }
 
+// TODO: implement this function
+/*
 void Node::addNeighbour(const string &name) {
   
-}
+}*/
 
 void Node::removeNeighbour(Node *n) {
   for (unsigned int i = 0; i < this->neighbours.size(); i++) {
