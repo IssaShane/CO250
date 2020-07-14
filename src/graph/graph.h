@@ -18,6 +18,10 @@ class Graph {
     void removeEdge(const std::string&, const std::string&);
 
     friend std::ostream& operator<<(std::ostream&,const Graph&);
+
+    // Simplex/LP Actions
+    matrix incidence() const;
+    LP stdipathLP(const std::string&, const std::string&) const;
 };
 
 std::ostream& operator<<(std::ostream&,const Graph&);

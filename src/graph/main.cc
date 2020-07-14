@@ -65,6 +65,25 @@ int main() {
       cin >> name;
       graphs[c-'a']->removeNode(name);
     }
+    else if (cmd == "incidence") {
+      char c;
+      matrix inc;
+      cin >> c;
+      inc = graphs[c-'a']->incidence();
+      cout << inc << endl;
+    }
+    else if (cmd == "dipathLP") {
+      char c;
+      LP lp;
+      cin >> c;
+      string s, t;
+      cin >> s;
+      cin >> t;
+      lp = graphs[c-'a']->stdipathLP(s,t);
+      LP_simplify(lp);
+      cout << lp << endl;
+    }
   }
+  for (unsigned int i = 0; i < 4; i++) delete graphs[i];
   return 0;
 }

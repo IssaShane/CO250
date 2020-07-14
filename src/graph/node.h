@@ -5,12 +5,15 @@
 #include <string>
 #include "edge.h"
 
+class Graph;
+
 class Node {
   private:
     std::vector<Edge*> neighbours;
     std::string name;
   
   public:
+    friend class Graph;
     Node(std::string);
     Node(std::string, Edge*);
     ~Node();

@@ -11,7 +11,7 @@ Node::Node(string name, Edge* e) {
   this->neighbours.emplace_back(e);
 }
 
-Node::~Node() {
+Node::~Node() { 
   for (unsigned int i = 0; i < this->neighbours.size(); i++)
     delete this->neighbours[i];
 }
@@ -73,7 +73,9 @@ void Node::setWeight(const string &name, const Fraction &weight) {
 string Node::getName() const { return this->name; }
 
 ostream & operator<<(ostream &out, const Node &n) {
-  out << n.name << ":" << endl;
+  out << n.name << ":";
+  if (n.neighbours.empty()) out << " no outflow";
+  else out << endl;
   for (unsigned int i = 0; i < n.neighbours.size(); i++) {
     out << n.neighbours[i]->start->name << "-"; 
     out << n.neighbours[i]->weight << "->";

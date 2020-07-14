@@ -13,6 +13,12 @@ void Graph::addNode(Node *n) {
 }
 
 void Graph::removeNode(const string &name) {
+  // remove node from the outflow of all of its in-neighbours
+  for (unsigned int i = 0; i < this->nodes.size(); i++) {
+    // if "name" is not in nodes[i]'s outflow, it does nothing
+    this->nodes[i]->removeNeighbour(name);
+  }
+
   for (unsigned int i = 0; i < this->nodes.size(); i++) {
     if (this->nodes[i]->getName() == name) {
       Node * backup = this->nodes[i];
@@ -69,9 +75,71 @@ void Graph::removeEdge(const string &start, const string &dest) {
   }
 }
 
+matrix Graph::incidence() const {
+  matrix retval;
+  vector<Edge*> arcs;
+  for (unsigned int i = 0; i < this->nodes.size(); i++) {
+    for (unsigned int j = 0; j < this->nodes[i]->neighbours.size(); j++) {
+      arcs.emplace_back(this->nodes[i]->neighbours[j]);
+    }
+  }
+  for (unsigned int i = 0; i < this->nodes.size(); i++) {
+    vector<Fraction> row;
+    for (unsigned int j = 0; j < arcs.size(); j++) {
+      if (this->nodes[i] == arcs[j]->start) row.emplace_back(-1);
+      else if (this->nodes[i] == arcs[j]->dest) row.emplace_back(1);
+      else row.emplace_back(0);
+    }
+    retval.emplace_back(row);
+  }
+  return retval;
+}
+
+LP Graph::stdipathLP(const string &start, const string &dest) const {
+  LP retval;
+  retval.A = this->incidence();
+  
+  vector<Edge*> arcs;
+  for (unsigned int i = 0; i < this->nodes.size(); i++) {
+    for (unsigned int j = 0; j < this->nodes[i]->neighbours.size(); j++) {
+      arcs.emplace_back(this->nodes[i]->neighbours[j]);
+    }
+  }
+  vector<Fraction> weights;
+  for (unsigned int i = 0; i < arcs.size(); i++) {
+    weights.emplace_back(arcs[i]->weight);
+  }
+  retval.obj = weights;
+  vector<Fraction> soln_set;
+  vector<Fraction> slack_vars;
+  for (unsigned int i = 0; i < retval.A.size(); i++) {
+    if (this->nodes[i]->name == start) soln_set.emplace_back(-1);
+    else if (this->nodes[i]->name == dest) soln_set.emplace_back(1);
+    else {
+      soln_set.emplace_back(0);
+      slack_vars.emplace_back(0);
+      vector<Fraction> newcol;
+      for (unsigned int j = 0; j < this->nodes.size(); j++) {
+        if (j == i) newcol.emplace_back(1);
+        else newcol.emplace_back(0);
+      }
+      add_column(retval.A,newcol);
+    }
+  }
+  retval.b = soln_set;
+  // add slack variables to obj function
+  for (unsigned int i = 0; i < slack_vars.size(); i++) {
+    retval.obj.emplace_back(slack_vars[i]);
+  }
+  // create default basis
+  retval.basis.emplace_back(0);
+  return retval;
+}
+
 ostream &operator<<(ostream &out, const Graph &g) {
   for (unsigned int i = 0; i < g.nodes.size(); i++) {
-    out << *g.nodes[i] << endl;
+    out << *g.nodes[i];
+    if (i < g.nodes.size()-1) out << endl;
   }
   return out;
 }
