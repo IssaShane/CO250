@@ -28,6 +28,8 @@ Fraction::Fraction(const Fraction &other) {
   this->denom = other.getDenom();
 }
 
+Fraction::~Fraction() {}
+
 // operator+(a,b) returns the value of the sum of the fractions a and b
 // Efficiency: O(1)
 Fraction operator+(const Fraction &a, const Fraction & b) {
@@ -197,10 +199,12 @@ int gcd(int x, int y) {
 // Requires: this does not have a denominator of zero
 void Fraction::simplify() {
   if (this->num == 0) {
+    cout << "num of 0" << endl;
     this->denom = 1;
     return;
   }
   else if (this->denom == 1) {
+    //cout << "denom of 1: " << this->num << "/" << this->denom << endl;
     return;
   }
   else if (this->num == this->denom) {

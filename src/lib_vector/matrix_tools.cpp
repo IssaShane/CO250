@@ -289,7 +289,7 @@ ostream &operator<<(ostream &str, const vector<vector<Fraction>> &m) {
 // efficiency: O(n^2)
 void matrix_simplify(vector<vector<Fraction>> &m) {
   for (unsigned int i = 0; i < m.size(); i++) {
-    for (unsigned int j = 0; j < m.size(); j++) {
+    for (unsigned int j = 0; j < m[i].size(); j++) {
       m[i][j].simplify();
     }
   }
