@@ -36,6 +36,11 @@ void Graph::removeNode(const string &name) {
   }
 }
 
+// addEdge(start, dest) adds an edge from the node start to the node dest to
+//   this graph
+// requires: neither start nor dest is nullptr, start is in this graph
+// effects: mutates data
+// efficiency: O(n)
 void Graph::addEdge(Node *start, Node *dest) {
   for (unsigned int i = 0; i < this->nodes.size(); i++) {
     if (this->nodes[i] == start) {
@@ -45,6 +50,11 @@ void Graph::addEdge(Node *start, Node *dest) {
   }
 }
 
+// addEdge(start, dest) adds an edge from the node of name start to the node
+//   of name dest to this graph
+// requires: this graph contains a node of name start
+// effects: mutates data
+// efficiency: O(n)
 void Graph::addEdge(const string &start, const string &dest) {
   Node *destnode;
   for (unsigned int i = 0; i < this->nodes.size(); i++) {
@@ -58,6 +68,12 @@ void Graph::addEdge(const string &start, const string &dest) {
   }
 }
 
+// setWeight(start, dest, weight) sets the weight of the edge from start to 
+//   dest to the value weight
+// requires: neither start nor dest is nullptr, there exists an edge from start
+//           to dest in this graph
+// effects: mutates data
+// efficiency: O(n²)
 void Graph::setWeight(Node *start, Node *dest, const Fraction &weight) {
   for (unsigned int i = 0; i < this->nodes.size(); i++) {
     if (this->nodes[i] == start) {
@@ -66,6 +82,12 @@ void Graph::setWeight(Node *start, Node *dest, const Fraction &weight) {
   }
 }
 
+// setWeight(start, dest, weight) sets the weight of the edge from the node
+//   of name start to the node of the name dest to the value weight
+// requires: neither start nor dest is nullptr, there exists an edge from start
+//           to dest in this graph
+// effects: mutates data
+// efficiency: O(n²)
 void Graph::setWeight(const string &start, const string &dest, 
   const Fraction &weight) {
   for (unsigned int i = 0; i < this->nodes.size(); i++) {
@@ -75,6 +97,11 @@ void Graph::setWeight(const string &start, const string &dest,
   }
 }
 
+// removeEdge(start, dest) removes the edge from the node of name start to the
+//   node of name dest
+// requires: there is a node from start to dest in this graph
+// effects: mutates data
+// efficiency: O(n²)
 void Graph::removeEdge(const string &start, const string &dest) {
   for (unsigned int i = 0; i < this->nodes.size(); i++) {
     if (this->nodes[i]->getName() == start) {
@@ -83,6 +110,11 @@ void Graph::removeEdge(const string &start, const string &dest) {
   }
 }
 
+// incidence() gives the incidence matrix for this graph, where each row 
+//   represents a node, and each column represents an arc
+// requires: none
+// effects: creates data
+// efficiency: O(n²)
 matrix Graph::incidence() const {
   matrix retval;
   vector<Edge*> arcs;
@@ -103,6 +135,11 @@ matrix Graph::incidence() const {
   return retval;
 }
 
+// stdipathLP(start, dest) gives an LP in SEF for the shortest directed path
+//   from the node of name start to the node of name dest
+// requires: this graph contains a directed path from start to dest
+// effects: creates data
+// efficiency: O(n²)
 LP Graph::stdipathLP(const string &start, const string &dest) const {
   LP retval;
   retval.A = this->incidence();
