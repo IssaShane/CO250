@@ -53,6 +53,10 @@ void Node::addNeighbour(const string &name) {
   
 }*/
 
+// removeNeighbour(n) removes n from the outflow of this node
+// requires: n is not nullptr, n is in the outflow of this node
+// effects: mutates data
+// efficiency: O(n)
 void Node::removeNeighbour(Node *n) {
   for (unsigned int i = 0; i < this->neighbours.size(); i++) {
     if (this->neighbours[i]->dest == n) {
@@ -61,6 +65,10 @@ void Node::removeNeighbour(Node *n) {
   }
 }
 
+// removeNeighbour(n) removes the node of name from the outflow of this node
+// requires: the node of name is in the outflow of this node
+// effects: mutates data
+// efficiency: O(n)
 void Node::removeNeighbour(const string &name) {
   for (unsigned int i = 0; i < this->neighbours.size(); i++) {
     if (this->neighbours[i]->dest->getName() == name) {
@@ -71,6 +79,10 @@ void Node::removeNeighbour(const string &name) {
   }
 }
 
+// setWeight(n, weight) sets the weight of the edge from this node to n to weight
+// requires: n is not nullptr, weight is a valid fraction
+// effects: mutates data
+// efficiency: O(n)
 void Node::setWeight(Node *n, const Fraction &weight) {
   for (unsigned int i = 0; i < this->neighbours.size(); i++) {
     if (this->neighbours[i]->dest == n) {
@@ -79,6 +91,11 @@ void Node::setWeight(Node *n, const Fraction &weight) {
   }
 }
 
+// setWeight(name, weight) sets the weight of the edge from this node to the 
+//   node of the given name to weight
+// requires: weight is a valid fraction
+// effects: mutates data
+// efficiency: O(n)
 void Node::setWeight(const string &name, const Fraction &weight) {
   for (unsigned int i = 0; i < this->neighbours.size(); i++) {
     if (this->neighbours[i]->dest->getName() == name) {
