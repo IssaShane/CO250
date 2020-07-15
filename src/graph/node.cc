@@ -47,11 +47,14 @@ void Node::addNeighbour(Edge *e) {
   this->neighbours.emplace_back(e);
 }
 
-// TODO: implement this function
-/*
+// addNeighbour(name) adds a new node with the given name as a neighbour to
+//   this node
+// effects: creates and mutates data
+// efficiency: O(1)
 void Node::addNeighbour(const string &name) {
-  
-}*/
+  Node *new_node = new Node{name};
+  this->addNeighbour(new_node);
+}
 
 // removeNeighbour(n) removes n from the outflow of this node
 // requires: n is not nullptr, n is in the outflow of this node
