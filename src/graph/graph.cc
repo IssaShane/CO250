@@ -146,16 +146,20 @@ LP Graph::stdipathLP(const string &start, const string &dest) const {
   
   vector<Edge*> arcs;
   for (unsigned int i = 0; i < this->nodes.size(); i++) {
+    //cout << "|outflow(" << this->nodes[i]->getName() << ")|: " << this->nodes[i]->neighbours.size() << endl;
     for (unsigned int j = 0; j < this->nodes[i]->neighbours.size(); j++) {
       arcs.emplace_back(this->nodes[i]->neighbours[j]);
     }
   }
+  //cout << "arcs.size(): " << arcs.size() << endl;
   vector<Fraction> weights;
   for (unsigned int i = 0; i < arcs.size(); i++) {
-    weights.emplace_back(arcs[i]->weight);
+    weights.emplace_back((-1)*arcs[i]->weight);
   }
   retval.obj = weights;
+  retval.A = this->incidence();
   vector<Fraction> soln_set;
+  /*
   vector<Fraction> slack_vars;
   for (unsigned int i = 0; i < retval.A.size(); i++) {
     if (this->nodes[i]->name == start) soln_set.emplace_back(-1);
@@ -170,14 +174,17 @@ LP Graph::stdipathLP(const string &start, const string &dest) const {
       }
       add_column(retval.A,newcol);
     }
+  }*/
+  for (unsigned int i = 0; i < this->nodes.size(); i++) {
+    if (this->nodes[i]->getName() == start) soln_set.emplace_back(-1);
+    else if (this->nodes[i]->getName() == dest) soln_set.emplace_back(1);
+    else soln_set.emplace_back(0);
   }
   retval.b = soln_set;
   // add slack variables to obj function
-  for (unsigned int i = 0; i < slack_vars.size(); i++) {
+  /*for (unsigned int i = 0; i < slack_vars.size(); i++) {
     retval.obj.emplace_back(slack_vars[i]);
-  }
-  // create default basis
-  retval.basis.emplace_back(0);
+  }*/
   return retval;
 }
 
