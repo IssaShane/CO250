@@ -109,6 +109,11 @@ int main() {
             cin >> f1;
             cout << f1 << endl;
         }
+        else if (cmd == "readmatrix") {
+            matrix A;
+            cin >> A;
+            cout << A << endl;
+        }
         else if (cmd == "readvec") {
             vector<Fraction> vec;
             cin >> vec;
@@ -119,14 +124,6 @@ int main() {
             cin >> f1;
             Fraction f2 = f1;
             cout << f2 << endl;
-        }
-        else if (cmd == "test") {
-            vector<Fraction> vec;
-            for (unsigned int i = 0; i < 3; i++) {
-                Fraction frac{(signed)i};
-                vec.emplace_back(frac);
-            }
-            cout << vec << endl;
         }
         else if (cmd == "addcol") {
             vector<Fraction> col;
@@ -148,6 +145,12 @@ int main() {
             cin >> a;
             a.simplify();
             cout << a << endl;
+        }
+        else if (cmd == "matrixsimplify") {
+            matrix A;
+            cin >> A;
+            matrix_simplify(A);
+            cout << A << endl;
         }
     }
     return 0;

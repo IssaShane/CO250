@@ -9,10 +9,12 @@ class Fraction {
     long long int denom;
 
   public:
+    Fraction();
     Fraction(int num, int denom);
     Fraction(Fraction, Fraction);
     Fraction(int num);
     Fraction(const Fraction &other);
+    ~Fraction();
     Fraction &operator-=(const Fraction &b);
     Fraction &operator+=(const Fraction &b);
     Fraction &operator*=(int b);
