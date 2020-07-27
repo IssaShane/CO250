@@ -106,7 +106,6 @@ Fraction operator/(const Fraction &a, const Fraction &b) {
   bcheck.simplify();
   if (bcheck == Fraction{0}) {
     cerr << "dividing by 0: a = " << a << " b = " << b << endl;
-    cout << "dividing by 0: a = " << a << " b = " << b << endl;
   }
   Fraction quotient(a.getNum()*b.getDenom(), a.getDenom()*b.getNum());
   return quotient;
@@ -199,7 +198,6 @@ int gcd(int x, int y) {
 // Requires: this does not have a denominator of zero
 void Fraction::simplify() {
   if (this->num == 0) {
-    cout << "num of 0" << endl;
     this->denom = 1;
     return;
   }

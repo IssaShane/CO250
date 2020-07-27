@@ -28,7 +28,7 @@ void multiply_row(vector<vector<Fraction>> &m, int i, int c);
 // Matrix col operations
 void add_column(matrix &m, const vector<Fraction> &col);
 
-bool matrix_equal(vector<vector<Fraction>> &m1, vector<vector<Fraction>> &m2);
+bool matrix_equal(const matrix &m1, const matrix &m2);
 
 // Matrix operations
 matrix Identity(int);
@@ -39,6 +39,7 @@ matrix subset(const matrix &m, const vector<int> &basis);
 void matrix_simplify(vector<vector<Fraction>> &m);
 vector<vector<Fraction>> transpose(vector<vector<Fraction>>&);
 void swap_rows(matrix &m, int i, int j);
+void swap_rows_below_diag(matrix &m, int i, int j);
 
 // returns the coefficient needed to eliminate the i-th row with the n-th row
 Fraction l(const vector<vector<Fraction>> &m, int i, int n);
