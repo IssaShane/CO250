@@ -72,8 +72,6 @@ vector<matrix> LU_decomp(const matrix &m) {
     //cout << "found max: " << max << endl;
     swap_rows(U, i, max);
     swap_rows(P, i, max);
-    swap_rows_below_diag(L, i, max);
-    matrix_simplify(U);
     //cout << "U: " << endl << U << endl;
 
     
@@ -81,11 +79,13 @@ vector<matrix> LU_decomp(const matrix &m) {
     for (unsigned int j = i+1; j < m.size(); j++) {
       L[j][i] = l(U,j,i);
     }
+    
+    swap_rows_below_diag(L, i, max);
+    matrix_simplify(U);
     // eliminate all entrants in the i-th column below the diagonal
     eliminate_col(U,i);
     matrix_simplify(L);
     matrix_simplify(U);
-    matrix_simplify(P);
   }
   
   vector<matrix> retval;
