@@ -152,6 +152,21 @@ int main() {
             matrix_simplify(A);
             cout << A << endl;
         }
+        else if (cmd == "matrixgetelem") {
+            matrix A;
+            int i, j;
+            cin >> A;
+            cin >> i;
+            cin >> j;
+            cout << A[i][j] << endl;
+        }
+        else if (cmd == "vecgetelem") {
+            vector<Fraction> v;
+            int i;
+            cin >> v;
+            cin >> i;
+            cout << v[i] << endl;
+        }
     }
     return 0;
 }
