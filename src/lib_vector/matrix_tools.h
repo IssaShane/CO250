@@ -27,6 +27,7 @@ void multiply_row(vector<vector<Fraction>> &m, int i, int c);
 
 // Matrix col operations
 void add_column(matrix &m, const vector<Fraction> &col);
+vector<Fraction> *getCol(const matrix &m, const int i);
 
 bool matrix_equal(const matrix &m1, const matrix &m2);
 

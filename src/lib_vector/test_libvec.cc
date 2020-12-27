@@ -167,6 +167,15 @@ int main() {
             cin >> i;
             cout << v[i] << endl;
         }
+        else if (cmd == "matrixgetcol") {
+            matrix A;
+            int i;
+            cin >> A;
+            cin >> i;
+            vector<Fraction> *row = getCol(A,i);
+            cout << *row << endl;
+            delete row;
+        }
     }
     return 0;
 }

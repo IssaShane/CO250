@@ -214,7 +214,14 @@ vector<Fraction> phase1(LP& lp_) {
       return soln;
     }
 
-    simplex_iteration(lp, soln);
+    try {
+      simplex_iteration(lp, soln);
+    } catch (...) {
+      cout << "unbounded LP!" << endl;
+      vector<Fraction> newsoln;
+      newsoln.emplace_back(Fraction{-1});
+      return newsoln;
+    }
   }
 }
 
@@ -227,13 +234,15 @@ vector<Fraction> phase2(LP& lp, vector<Fraction> &soln) {
   while (true) {
     if (optimal(lp)) {
       return soln;}
-    else if (unbounded(lp)) {
+    
+    try {
+      simplex_iteration(lp, soln);
+    } catch (...) {
+      cout << "unbounded LP!" << endl;
       vector<Fraction> newsoln;
-      for (unsigned int i = 0; i < soln.size(); i++) 
-        newsoln.emplace_back(Fraction{-1});
+      newsoln.emplace_back(Fraction{-1});
       return newsoln;
     }
-    simplex_iteration(lp, soln);
   }
 }
 
@@ -261,6 +270,10 @@ void simplex_iteration(LP &lp, vector<Fraction> &soln) {
     canonicalize(lp);
     LP_simplify(lp);
     return;
+  }
+  // check for unboundedness
+  else if ((*getCol(lp.A,k)) <= 0) {
+    throw "unbounded LP";
   }
 
   // TODO: add check for unboundedness

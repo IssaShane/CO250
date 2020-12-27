@@ -131,6 +131,73 @@ Fraction inner_product(const vector<Fraction> &a, const vector<Fraction> &b) {
   return product;
 }
 
+bool operator==(const std::vector<Fraction> &a, const std::vector<Fraction> &b) {
+  return (vec_equal(a,b));
+}
+
+bool operator<(const std::vector<Fraction>& a, const std::vector<Fraction> &b) {
+  for (unsigned int i = 0; i < a.size(); i++) {
+    if (a[i] >= b[i]) return false; 
+  }
+  return true;
+}
+
+bool operator>(const std::vector<Fraction>& a, const std::vector<Fraction> &b) {
+  for (unsigned int i = 0; i < a.size(); i++) {
+    if (a[i] <= b[i]) return false;
+  }
+  return true;
+}
+
+bool operator<=(const std::vector<Fraction>& a, const std::vector<Fraction> &b) {
+  for (unsigned int i = 0; i < a.size(); i++) {
+    if (a[i] > b[i]) return false; 
+  }
+  return true;
+}
+
+bool operator>=(const std::vector<Fraction>& a, const std::vector<Fraction> &b) {
+  for (unsigned int i = 0; i < a.size(); i++) {
+    if (a[i] < b[i]) return false;
+  }
+  return true;
+}
+
+bool operator==(const std::vector<Fraction> &a, const Fraction &b) {
+  for (Fraction elem : a) {
+    if (elem != b) return false;
+  }
+  return true;
+}
+
+bool operator<(const std::vector<Fraction>& a, const Fraction &b) {
+  for (Fraction elem : a) {
+    if (elem >= b) return false;
+  }
+  return true;
+}
+
+bool operator>(const std::vector<Fraction>& a, const Fraction &b) {
+  for (Fraction elem : a) {
+    if (elem <= b) return false;
+  }
+  return true;
+}
+
+bool operator<=(const std::vector<Fraction>& a, const Fraction &b) {
+  for (Fraction elem : a) {
+    if (elem > b) return false;
+  }
+  return true;
+}
+
+bool operator>=(const std::vector<Fraction>& a, const Fraction &b) {
+  for (Fraction elem : a) {
+    if (elem < b) return false;
+  }
+  return true;
+}
+
 // operator*(a, b) returns the standard inner product (dot product) 
 //   of the vectors a and b
 // Requires: a.size() == b.size()

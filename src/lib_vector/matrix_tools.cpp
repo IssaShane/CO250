@@ -172,6 +172,16 @@ void add_column(matrix &m, const vector<Fraction> &col) {
   }
 }
 
+// effects: allocates heap memory (must be freed)
+vector<Fraction> *getCol(const matrix &m, const int i) {
+  vector<Fraction> *col = new vector<Fraction>();
+  for (vector<Fraction> row : m) {
+    col->emplace_back(row[i]);
+  }
+  if (col->empty()) col->emplace_back(Fraction{0});
+  return col;
+}
+
 // rowcol_subset(row,col) returns m without row and col
 matrix rowcol_subset(const matrix &m, unsigned int row, unsigned int col) {
   matrix mat;

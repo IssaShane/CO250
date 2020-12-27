@@ -25,6 +25,20 @@ Fraction operator*(const std::vector<Fraction> &a, const std::vector<Fraction> &
 int inner_product(const std::vector<int>&, const std::vector<int>&);
 Fraction inner_product(const std::vector<Fraction>&, const std::vector<Fraction>&);
 
+// Vector x Vector Comparison
+bool operator==(const std::vector<Fraction> &a, const std::vector<Fraction> &b);
+bool operator<(const std::vector<Fraction>& a, const std::vector<Fraction> &b);
+bool operator>(const std::vector<Fraction>& a, const std::vector<Fraction> &b);
+bool operator<=(const std::vector<Fraction>& a, const std::vector<Fraction> &b);
+bool operator>=(const std::vector<Fraction>& a, const std::vector<Fraction> &b);
+
+// Vector x Fraction Comparison
+bool operator==(const std::vector<Fraction> &a, const Fraction &b);
+bool operator<(const std::vector<Fraction>& a, const Fraction &b);
+bool operator>(const std::vector<Fraction>& a, const Fraction &b);
+bool operator<=(const std::vector<Fraction>& a, const Fraction &b);
+bool operator>=(const std::vector<Fraction>& a, const Fraction &b);
+
 // Input / Output
 std::ostream &operator<<(std::ostream &str, const std::vector<Fraction> &v);
 std::istream &operator>>(std::istream&, std::vector<Fraction>&);
